@@ -46,4 +46,20 @@ public class UserController {
             return new ResponseEntity<String>("some error has occured while sending otp", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @RequestMapping(value = "/verifyotp", method = RequestMethod.POST)
+    public ResponseEntity<String> verifyotp(@RequestParam(value = "phonrno")Long phno,@RequestParam(value = "otp")Integer otp){
+
+        boolean isuserpres = userService.isuserPresent(phno);
+        if(isuserpres){
+            boolean iscorrect = userService.verifyOtp(phno, otp);
+            if(iscorrect){
+                return new ResponseEntity<String>("otp verified", HttpStatus.OK);
+            }else {
+                return new ResponseEntity<String>("invalid otp", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }else {
+            return new ResponseEntity<String>("user not registered", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
